@@ -1,24 +1,36 @@
 const API_KEY = import.meta.env.VITE_NASA_API_KEY;
 
-const datepicker = document.querySelector("#datepicker");
+function updateClock() {
+    const now = new Date();
 
-datepicker.addEventListener("change", () => {
-    const date = datepicker.value;
-    if (!date) return;
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
 
-    document.querySelector("#app").innerHTML = "<p>loading...</p>";
+    document.getElementById('clock').textContent = `${hours}:${minutes}`;
 
-    fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${date}`)
+    const greetingEl = document.getElementById('greeting');
+    if (hours < 12) {
+        greetingEl.textContent = "Good morning.";
+    } else if (hours < 18) {
+        greetingEl.textContent = "Good afternoon.";
+    } else {
+        greetingEl.textContent = "Good evening.";
+    }
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+function fetchBG() {
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
+    fetch(url)
         .then(res => res.json())
         .then(data => {
-            document.querySelector("#app").innerHTML = `
-                <h1 class="title">${data.title}</h1>
-                <img src="${data.url}" alt="${data.title}" class="cover" />
-                <p class="body">${data.explanation}</p>
-            `;
+            if (data.media_type === 'image') {
+                document.body.style.backgroundImage = `url('${data.url}')`;
+            }
         })
-        .catch(err => {
-            document.querySelector("#app").innerHTML = `<p>Error loading APOD data.</p>`;
-            console.error(err);
-        });
-});
+        .catch(err => console.error("Error fetching NASA API", err));
+}
+
+fetchBG();
