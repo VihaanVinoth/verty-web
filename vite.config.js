@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
 
-export default defineConfig({
-  base: '/verty-web/',
-})
+export default defineConfig(({ mode }) => ({
+  base: mode === 'extension' ? './' : '/verty-web/',
+}))
