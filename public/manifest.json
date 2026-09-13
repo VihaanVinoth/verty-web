@@ -1,7 +1,8 @@
 {
     "manifest_version": 3,
+    "version": "1.0",
     "name": "verty-web",
-    "version": "Simple tab dashboard.",
+    "description": "Simple tab dashboard.",
     "chrome_url_overrides": {
         "newtab": "index.html"
     },

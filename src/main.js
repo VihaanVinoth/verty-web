@@ -22,7 +22,11 @@ updateClock();
 setInterval(updateClock, 1000);
 
 function fetchBG() {
-    const url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`;
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const dateStr = yesterday.toISOString().split('T')[0];
+
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${dateStr}`;
     fetch(url)
         .then(res => res.json())
         .then(data => {
