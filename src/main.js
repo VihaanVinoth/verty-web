@@ -21,17 +21,27 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-function fetchBG() {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const dateStr = yesterday.toISOString().split('T')[0];
+function fetchRandomDate(start, end) {
+    const randTime = start.getTime() + Math.random() * (end.getTime() - start.getTime());
+    return new Date(randTime).toISOString().split('T')[0];
+}
 
-    const url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${dateStr}`;
+function fetchBG() {
+    const startDate = new Date('1995-06-16');
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() - 1);
+
+    const randDate = fetchRandomDate(startDate, endDate);
+
+    const url = `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=${randDate}`;
+
     fetch(url)
         .then(res => res.json())
         .then(data => {
             if (data.media_type === 'image') {
                 document.body.style.backgroundImage = `url('${data.url}')`;
+            } else {
+                fetchBG();
             }
         })
         .catch(err => console.error("Error fetching NASA API", err));
